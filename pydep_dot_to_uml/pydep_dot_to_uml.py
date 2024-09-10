@@ -11,8 +11,8 @@ __version__ = "1.0.0"
 
 def _pydep_dot_to_uml(fpath: Path) -> str:
     root, files = load(fpath)
-    arrows: list[str] = sorted(set.union(*tuple(i.arrows() for i in files)))
-    return "@startuml\n" + root.package() + "\n\n" + "\n".join(arrows) + "\n@enduml"
+    arrows = "\n".join(sorted(set.union(*tuple(i.arrows() for i in files))))
+    return f"@startuml\n{root.package()}\n\n{arrows}\n@enduml"
 
 
 def pydep_dot_to_uml(file: Path) -> None:

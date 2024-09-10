@@ -42,7 +42,7 @@ class File:
 
     name: str
     dirname: str
-    delim: str  # A Delimiter to separate names in tags that is not present in any UML
+    delim: str  # A delimiter to separate names in tags that is not present in any UML
     parent: File | None = None
     requires: set[File] = field(default_factory=set)
     children: set[File] = field(default_factory=set)
@@ -129,7 +129,7 @@ class File:
         items = [i.package(_require_root=False) for i in self.children]
         items.append(f'file "{INIT}" as {self.src_tag}')
         name = self.dirname.rsplit(".", 1)[-1]
-        ret = f'package "{name}" as {self.dst_tag} ' + "{\n" + "\n".join(sorted(items)) + "\n}"
+        ret = f'package "{name}" as {self.dst_tag} {{\n{"\n".join(sorted(items))}\n}}'
         return ret.replace("\n\n", "\n")
 
     def arrows(self) -> set[str]:
@@ -145,7 +145,7 @@ class File:
         """
         if file.parent is not None:
             raise ValueError("Only the root file should be converted to a non-mutable File")
-        muts = file.reachable()
+        muts: set[MutableFile] = file.reachable()
         if any(i.dirname is None for i in muts):
             raise ValueError("Cannot convert files with None .dirname")
         rv = {i: File(name=i.name, dirname=cast(str, i.dirname), delim=delim) for i in muts}

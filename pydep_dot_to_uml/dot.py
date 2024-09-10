@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class _QueryDict(dict):
     """
-    A defaultdict that is passed the key missing when it is missing
+    A dict that constructs a MutableFile if an entry is missing
     """
 
     def __missing__(self, key):
@@ -36,12 +36,12 @@ def _parse_dot(data: str) -> tuple[str, ...]:
     return tuple(i.strip() for i in data.split("\n") if "->" in i)
 
 
-def _rm_classes(x):
+def _rm_classes(x: str) -> str:
     """
     If any character is a capital letter, assume it is a class and replace it with its enclosing package
     """
     cap = tuple(i for i in x if i.isupper())
-    if not len(cap):
+    if len(cap) == 0:
         return x
     p = x[: x.find(cap[0]) - 1]
     warn(f"Replacing class {x} with parent {p}")
@@ -57,7 +57,7 @@ def _create_files(lines: tuple[str, ...]) -> set[MutableFile]:
     for line in (i.split(" [fill")[0] for i in lines):
         dependency, name = line.split(" -> ")
         if dependency != name:
-            files[f".{_rm_classes(name)}"].requires.add(files[f".{_rm_classes(dependency)}"])
+            files[_rm_classes(name)].requires.add(files[_rm_classes(dependency)])
     return set(files.values())
 
 
@@ -84,7 +84,7 @@ def load(fpath: Path) -> tuple[File, set[File]]:
         if f.children:
             f.name += f".{INIT}"
     # Construct Files
-    delim: str = "WQ"
+    delim: str = "_"
     while delim in data:
-        delim += "XZ"
+        delim += "_"
     return File.from_mutable(roots[0], delim)

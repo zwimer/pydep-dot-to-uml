@@ -6,7 +6,7 @@ import sys
 from .dot import load
 
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 def _pydep_dot_to_uml(fpath: Path) -> str:

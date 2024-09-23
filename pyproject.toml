@@ -9,8 +9,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 license = {text = "GPL"}
-# description = "A tiny CLI used for quoting input lines"
-# urls = {Homepage = "https://github.com/zwimer/quote"}
+description = "A program which converts the dot output of `pydep` into PlantUML"
+urls = {Homepage = "https://github.com/zwimer/pydep-dot-to-uml"}
 requires-python = ">= 3.12"
 dynamic = ["version"]
 

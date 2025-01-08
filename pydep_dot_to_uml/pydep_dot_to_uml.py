@@ -5,12 +5,12 @@ import argparse
 from .dot import load
 
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 
 def _pydep_dot_to_uml(fpath: Path) -> str:
     root, files = load(fpath)
-    arrows = "\n".join(sorted(set.union(*tuple(i.arrows() for i in files))))
+    arrows = "\n".join(sorted(set.union(*[i.arrows() for i in files])))
     return f"@startuml\n{root.package()}\n\n{arrows}\n@enduml"
 
 

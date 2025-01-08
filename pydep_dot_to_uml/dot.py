@@ -18,7 +18,7 @@ class _QueryDict(dict):
         return self[key]
 
 
-def _parse_dot(data: str) -> tuple[str, ...]:
+def _parse_dot(data: str) -> list[str]:
     """
     :fpath: The path to the dot file to parse
     :return: The arrow strings within the file
@@ -33,14 +33,14 @@ def _parse_dot(data: str) -> tuple[str, ...]:
     for i, k in sorted(pairs, key=lambda x: -len(x[0])):  # Sort to handle tags containing others
         data = data.replace(i, k)
     # Return only the arrow lines
-    return tuple(i.strip() for i in data.split("\n") if "->" in i)
+    return [i.strip() for i in data.split("\n") if "->" in i]
 
 
 def _rm_classes(x: str) -> str:
     """
     If any character is a capital letter, assume it is a class and replace it with its enclosing package
     """
-    cap = tuple(i for i in x if i.isupper())
+    cap = [i for i in x if i.isupper()]
     if len(cap) == 0:
         return x
     p = x[: x.find(cap[0]) - 1]
@@ -48,7 +48,7 @@ def _rm_classes(x: str) -> str:
     return p
 
 
-def _create_files(lines: tuple[str, ...]) -> set[MutableFile]:
+def _create_files(lines: list[str]) -> set[MutableFile]:
     """
     Create a set of MutableFiles from the lines of a dot file
     This does not populate any fields other than name
@@ -67,10 +67,10 @@ def load(fpath: Path) -> tuple[File, set[File]]:
     files: set[MutableFile] = _create_files(_parse_dot(data))
     # Define parents
     for f in files:
-        parents = tuple(i for i in files if f.name.startswith(f"{i.name}."))
+        parents = [i for i in files if f.name.startswith(f"{i.name}.")]
         if parents:
             f.parent = max(parents, key=lambda x: len(x.name))
-    roots = tuple(i for i in files if i.parent is None)
+    roots = [i for i in files if i.parent is None]
     if len(roots) != 1:
         raise ValueError("There should be exactly one root file")
     # Define children

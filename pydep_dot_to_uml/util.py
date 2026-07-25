@@ -1,7 +1,6 @@
 from functools import cache
 import sys
 
-
 INIT = "_init_"  # Avoid __ since UML will interpret it
 
 

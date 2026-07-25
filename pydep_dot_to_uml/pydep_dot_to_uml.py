@@ -4,8 +4,7 @@ import argparse
 
 from .dot import load
 
-
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 
 def _pydep_dot_to_uml(fpath: Path) -> str:

@@ -14,9 +14,7 @@ class MutableFile:
     children: set[MutableFile] = field(default_factory=set)
 
     def __hash__(self) -> int:
-        """
-        Hash should only be based on the name
-        """
+        """Hash should only be based on the name"""
         return hash(self.name)
 
     def _reachable(self, key: str) -> set[MutableFile]:
@@ -25,7 +23,8 @@ class MutableFile:
 
     def reachable(self, *, require_root: bool = True) -> set[MutableFile]:
         """
-        :return: All MutableFiles recursively reachable via the given key, including the given file
+        Returns:
+            All MutableFiles recursively reachable via the given key, including the given file
         """
         if require_root and self.parent is not None:
             raise ValueError("Only the root file should be converted to a non-mutable File")
@@ -34,8 +33,7 @@ class MutableFile:
 
 @dataclass(kw_only=True)  # Effectively frozen = true, but we need it false for internal construction
 class File:
-    """
-    An abstraction for a python file
+    """An abstraction for a python file
     This class freezes is frozen if .frozen is True
     name is the pydep name give to the specific file
     """
@@ -49,15 +47,11 @@ class File:
     frozen: bool = False
 
     def __hash__(self) -> int:
-        """
-        Hash should only be based on the name
-        """
+        """Hash should only be based on the name"""
         return hash(self.name)
 
     def __setattr__(self, key, value):
-        """
-        Prevent setting any attributes if frozen
-        """
+        """Prevent setting any attributes if frozen"""
         if self.frozen:
             raise AttributeError("Cannot set attributes on a frozen File")
         object.__setattr__(self, key, value)
@@ -69,7 +63,8 @@ class File:
     @property
     def lineage(self) -> set[str]:
         """
-        :return: The directories that contain this file
+        Returns:
+            The directories that contain this file
         """
         ret = set()
         node = self
@@ -81,7 +76,8 @@ class File:
     @property
     def src_tag(self) -> str:
         """
-        :return: The tag when this node is the source node in the UML
+        Returns:
+            The tag when this node is the source node in the UML
         """
         if not self.init_py:
             return self.dst_tag
@@ -90,14 +86,16 @@ class File:
     @property
     def dst_tag(self) -> str:
         """
-        :return: The tag when this node is the destination node in the UML
+        Returns:
+            The tag when this node is the destination node in the UML
         """
         return self.name.replace(".", self.delim)
 
     @property
     def init_py(self) -> bool:
         """
-        :return: True if this file represents a __init__.py file
+        Returns:
+            True if this file represents a __init__.py file
         """
         return self.name.endswith(INIT)
 
@@ -107,7 +105,8 @@ class File:
 
     def _arrow(self, requirement: File) -> str:
         """
-        :return: The desired arrow based on the requirement
+        Returns:
+            The desired arrow based on the requirement
         """
         if self.dirname == requirement.dirname:
             return Arrow.INTRA
@@ -119,7 +118,8 @@ class File:
 
     def package(self, *, _require_root: bool = True) -> str:
         """
-        :return: The UML representation of this file excluding the arrows
+        Returns:
+            The UML representation of this file excluding the arrows
         """
         if _require_root and self.parent is not None:
             raise ValueError("Only the root file should be converted to a package")
@@ -134,14 +134,16 @@ class File:
 
     def arrows(self) -> set[str]:
         """
-        :return: The set of UML arrows that this file requires
+        Returns:
+            The set of UML arrows that this file requires
         """
         return {f"{self.src_tag} {self._arrow(i)} {i.dst_tag}" for i in self.requires}
 
     @staticmethod
     def from_mutable(file: MutableFile, delim: str, *, _require_root: bool = True) -> tuple[File, set[File]]:
         """
-        :return: A File given file and the File's that had to be constructed to produce it
+        Returns:
+            A File given file and the File's that had to be constructed to produce it
         """
         if file.parent is not None:
             raise ValueError("Only the root file should be converted to a non-mutable File")

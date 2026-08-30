@@ -9,9 +9,7 @@ if TYPE_CHECKING:
 
 
 class _QueryDict(dict):
-    """
-    A dict that constructs a MutableFile if an entry is missing
-    """
+    """A dict that constructs a MutableFile if an entry is missing"""
 
     def __missing__(self, key):
         self[key] = MutableFile(key)
@@ -19,9 +17,10 @@ class _QueryDict(dict):
 
 
 def _parse_dot(data: str) -> list[str]:
-    """
-    :fpath: The path to the dot file to parse
-    :return: The arrow strings within the file
+    """:fpath: The path to the dot file to parse
+
+    Returns:
+        The arrow strings within the file
     """
     # Find all the labels and names within the dot text
     sect: int = data.rfind("\n", 0, data.find("label"))
@@ -37,9 +36,7 @@ def _parse_dot(data: str) -> list[str]:
 
 
 def _rm_classes(x: str) -> str:
-    """
-    If any character is a capital letter, assume it is a class and replace it with its enclosing package
-    """
+    """If any character is a capital letter, assume it is a class and replace it with its enclosing package"""
     cap = [i for i in x if i.isupper()]
     if len(cap) == 0:
         return x
@@ -49,8 +46,7 @@ def _rm_classes(x: str) -> str:
 
 
 def _create_files(lines: list[str]) -> set[MutableFile]:
-    """
-    Create a set of MutableFiles from the lines of a dot file
+    """Create a set of MutableFiles from the lines of a dot file
     This does not populate any fields other than name
     """
     files = _QueryDict()

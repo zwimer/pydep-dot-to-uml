@@ -36,6 +36,9 @@ version = {attr = "pydep_dot_to_uml.__version__"}
 
 # Tools
 
+[tool.pylint.main]
+jobs = 0
+
 [tool.black]
 line-length = 120
 target-version = ["py312"]
